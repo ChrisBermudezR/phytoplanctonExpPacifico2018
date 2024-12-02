@@ -1,0 +1,28 @@
+{
+    "id": "62DC392B",
+    "path": null,
+    "project_path": null,
+    "type": "object_explorer",
+    "hash": "0",
+    "contents": "",
+    "dirty": false,
+    "created": 1710367254543.0,
+    "source_on_save": false,
+    "relative_order": 9,
+    "properties": {
+        "id": "b05c900e4b2f488da15ab6cdef0de28d",
+        "name": "Fredy",
+        "title": "Fredy",
+        "language": "R",
+        "source_window_id": "",
+        "Source": "Source"
+    },
+    "folds": "",
+    "lastKnownWriteTime": 1710284834,
+    "encoding": "",
+    "collab_server": "",
+    "source_window": "",
+    "last_content_update": 1710367254543,
+    "read_only": false,
+    "read_only_alternatives": []
+}

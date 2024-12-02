@@ -1,0 +1,28 @@
+{
+    "id": "57A11444",
+    "path": null,
+    "project_path": null,
+    "type": "object_explorer",
+    "hash": "0",
+    "contents": "",
+    "dirty": false,
+    "created": 1710452883225.0,
+    "source_on_save": false,
+    "relative_order": 8,
+    "properties": {
+        "id": "194b0b9642da4a18b4297364a12f29b5",
+        "name": "taxon_coverage",
+        "title": "taxon_coverage",
+        "language": "R",
+        "source_window_id": "",
+        "Source": "Source"
+    },
+    "folds": "",
+    "lastKnownWriteTime": 2337770986344,
+    "encoding": "",
+    "collab_server": "",
+    "source_window": "",
+    "last_content_update": 1710452883225,
+    "read_only": false,
+    "read_only_alternatives": []
+}

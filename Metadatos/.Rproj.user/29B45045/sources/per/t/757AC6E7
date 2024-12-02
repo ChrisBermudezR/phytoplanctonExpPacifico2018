@@ -1,0 +1,28 @@
+{
+    "id": "757AC6E7",
+    "path": null,
+    "project_path": null,
+    "type": "object_explorer",
+    "hash": "0",
+    "contents": "",
+    "dirty": false,
+    "created": 1710453156667.0,
+    "source_on_save": false,
+    "relative_order": 9,
+    "properties": {
+        "id": "e35598c533ca4beea5ee86f075582b68",
+        "name": "coverage",
+        "title": "coverage",
+        "language": "R",
+        "source_window_id": "",
+        "Source": "Source"
+    },
+    "folds": "",
+    "lastKnownWriteTime": 7596850666551140724,
+    "encoding": "",
+    "collab_server": "",
+    "source_window": "",
+    "last_content_update": 1710453156667,
+    "read_only": false,
+    "read_only_alternatives": []
+}
