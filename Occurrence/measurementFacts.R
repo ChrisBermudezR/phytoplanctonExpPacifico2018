@@ -39,12 +39,31 @@ measurementFacts_wide_to_long<-measurementFacts_wide_to_long %>% mutate(measurem
                                                       ))))))))))))))))))))
 
 
-measurementFacts_tablaMerge<-base::merge(measurementFacts_wide_to_long, eventoTable, by="fieldNumber")
+eventoTable<-read.csv2("../DwC/event.csv", header = TRUE, sep=",")
 
-measurementFacts_tablaMerge2<-base::merge(measurementFacts_tablaMerge, DwC, by="eventID")
+event_selected<-eventoTable%>%
+                select(eventID,fieldNumber)
+
+measurementFacts_tablaMerge<-measurementFacts_wide_to_long%>%
+  dplyr::inner_join(event_selected, by="fieldNumber", relationship = "many-to-many")
+
+
+
+
+dwc_select<-read.csv2("../DwC/Occurrence.csv", header = TRUE, sep=",")
+
+dwc_select<-dwc_select%>%
+              select(eventID, occurrenceID)
+
+measurementFacts_tablaMerge2<-measurementFacts_tablaMerge%>%
+  dplyr::inner_join(dwc_select, by="eventID", relationship = "many-to-many")
+
 
 measure_Tabla_Final<-measurementFacts_tablaMerge2 %>% dplyr::select(occurrenceID, eventID,measurementType,measurementValue, measurementUnit)
 
+
+measure_Tabla_Final= measure_Tabla_Final%>%
+  filter(measurementValue != is.na(measurementValue))  
 
 write.table(
   measure_Tabla_Final, 

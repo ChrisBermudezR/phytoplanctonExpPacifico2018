@@ -1,12 +1,10 @@
-
-
-
 if(!require(worrms)){install.packages("worrms")}
-if(!require(dplyr)){install.packages("dplyr")}
 if(!require(tidyr)){install.packages("tidyr")}
+if(!require(tidyr)){install.packages("dplyr")}
 if(!require(writexl)){install.packages("writexl")}
 
 #Consultar: https://rs.gbif.org/core/dwc_occurrence_2024-02-23.xml
+
 
 
 wide<-readxl::read_excel("Datos_Fito_Final.xlsx", sheet = "wide")
@@ -17,7 +15,7 @@ wide_to_long <- tidyr::pivot_longer(wide,
                                          names_to = "verbatimIdentification",
                                          values_to = "individualCount")
 
-source("calculo_densidad.R")
+source("calculo_Densidad.R")
 calculo_densidad(wide_to_long$individualCount, 
                  wide_to_long$diametro_campo, 
                  wide_to_long$N_campos, 
@@ -26,7 +24,8 @@ calculo_densidad(wide_to_long$individualCount,
                  wide_to_long$Vol_Alicuota,
                  wide_to_long$Vol_Muestreado)
 
-Matriz_Densidad_long<-wide_to_long %>% mutate(organismQuantity = densidadCalculada,
+Matriz_Densidad_long<-wide_to_long %>% 
+      dplyr::mutate(organismQuantity = densidadCalculada,
                                                     confianza = 2/sqrt(individualCount)*100
                                                     )
 
@@ -42,7 +41,8 @@ occurrenceID_secuencia<-as.data.frame(seq(1:1462))
 colnames(occurrenceID_secuencia)<-"occurrenceID_secuencia"
 
 bindTabla<-cbind(occurrenceID_secuencia, tablaMerge$eventID)
-bindTabla<-bindTabla%>% mutate(occurrenceID = paste0(bindTabla$`tablaMerge$eventID`,":",bindTabla$occurrenceID_secuencia))
+bindTabla<-bindTabla%>% 
+  dplyr::mutate(occurrenceID = paste0(bindTabla$`tablaMerge$eventID`,":",bindTabla$occurrenceID_secuencia))
 occurrenceID<-as.data.frame(bindTabla[,3])
 colnames(occurrenceID)<-"occurrenceID"
 
@@ -134,7 +134,8 @@ colnames(organismQuantityType)="organismQuantityType"
 
 #occurrenceStatus####
 
-occurrenceStatus<-as.data.frame(individualCount%>%mutate(occurrenceStatus= ifelse(individualCount > 0, "present", "absent")))
+occurrenceStatus<-as.data.frame(individualCount%>%
+                                  dplyr::mutate(occurrenceStatus= ifelse(individualCount > 0, "present", "absent")))
 occurrenceStatus<-as.data.frame(occurrenceStatus[,2])
 colnames(occurrenceStatus)="occurrenceStatus"
 
@@ -150,6 +151,10 @@ colnames(eventID)="eventID"
 samplingProtocol<-as.data.frame(tablaMerge$samplingProtocol)
 colnames(samplingProtocol)="samplingProtocol"
 
+#eventType####
+
+eventType<-as.data.frame(rep("Muestra", time=1462))
+colnames(eventType)="eventType"
 
 #sampleSizeValue####
 sampleSizeValue<-as.data.frame(tablaMerge$sampleSizeValue)
@@ -273,8 +278,9 @@ colnames(dateIdentified)="dateIdentified"
 verbatimIdentification<-as.data.frame(tablaMerge$verbatimIdentification)
 colnames(verbatimIdentification)="verbatimIdentification"
 
-
-
+#taxonRank####
+taxonRank<-as.data.frame(rep("Género", time=1462))
+colnames(taxonRank)="taxonRank"
 
 
 #Tabla Final####
@@ -300,6 +306,7 @@ TablaFinal<-cbind(occurrenceID,
               occurrenceStatus,
               parentEventID,
               eventID,
+              eventType,
               samplingProtocol,
               sampleSizeValue,
               sampleSizeUnit,
@@ -319,6 +326,8 @@ TablaFinal<-cbind(occurrenceID,
               country,
               countryCode,
               locality,
+              stateProvince,
+              county,
               minimumDepthInMeters,
               maximumDepthInMeters,
               decimalLatitude,
@@ -328,7 +337,8 @@ TablaFinal<-cbind(occurrenceID,
               identifiedBy,
               identifiedByID,
               dateIdentified,
-              verbatimIdentification
+              verbatimIdentification,
+              taxonRank
               )
 
 
@@ -338,7 +348,8 @@ TablaFinal<-cbind(occurrenceID,
 
 #Taxonomía####
 taxonomia<-readxl::read_excel("matched_Total.xlsx", sheet = "Sheet1")
-taxonomia<-taxonomia%>%select(verbatimIdentification,
+taxonomia<-taxonomia%>%
+  dplyr::select(verbatimIdentification,
                    scientificname, 
                    authority, 
                    url, 
@@ -356,7 +367,7 @@ colnames(taxonomia)<-c("verbatimIdentification",
 "scientificNameAuthorship",
 "taxonID",
 "scientificNameID",
-"taxonRank",
+"taxonomicStatus",
 "kingdom",
 "phylum",
 "class",
@@ -378,7 +389,90 @@ DwC<-merge(TablaFinal,taxonomia, by= "verbatimIdentification")
 
 
 
-DwC<-DwC%>%arrange(occurrenceID)
+DwC<-DwC%>%
+  dplyr::arrange(occurrenceID)
+
+DwC<-DwC%>%
+    dplyr::select(
+      #Obligatorio para la publicación de los registros biológicos a través del SiB Colombia
+      occurrenceID,
+      basisOfRecord,
+      type,          
+      institutionCode,
+      institutionID,
+      #Obligatorio según el origen de los datos  y recomendado para la documentación de un buen registro biológico
+      
+      
+      datasetName,
+      datasetID,             
+       language,
+       rightsHolder,
+       accessRights,
+       references,           
+      ownerInstitutionCode,
+      
+      recordNumber,
+      recordedBy,
+      recordedByID,            
+       individualCount,
+       organismQuantity,
+       organismQuantityType,
+      
+       occurrenceStatus,  
+      
+       parentEventID,
+       eventID,
+      eventType,
+      
+       samplingProtocol,
+       sampleSizeValue,         
+       sampleSizeUnit,
+       samplingEffort,
+       eventDate,
+       year,
+      month,
+       day,
+       eventTime,
+       habitat,               
+       fieldNumber,
+       eventRemarks,
+       locationID,
+       higherGeography,
+      continent,
+      waterBody,
+      country,
+      countryCode,
+       locality,
+      stateProvince,
+      county,
+      
+       minimumDepthInMeters,
+       maximumDepthInMeters,
+       decimalLatitude,   
+       decimalLongitude,
+       geodeticDatum,
+       georeferencedBy,
+      
+#Taxonomy
+
+       identifiedBy,            
+       identifiedByID,
+       dateIdentified,
+       verbatimIdentification,
+       scientificName,
+       scientificNameAuthorship,
+       taxonID,
+       scientificNameID,
+       taxonomicStatus,
+       kingdom,
+       phylum,
+       class,
+       order,
+       family,                  
+       genus,
+      taxonRank
+    )
+
 write.table(
   DwC, 
   file = "../DwC/Occurrence.csv", 
@@ -386,7 +480,8 @@ write.table(
   row.names = FALSE, 
   sep = ",", 
   fileEncoding = "UTF-8",
-  na = ""
+  na = "",
+  quote = TRUE
 )
 
 

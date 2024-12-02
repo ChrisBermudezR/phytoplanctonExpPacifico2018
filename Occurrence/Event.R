@@ -19,13 +19,13 @@ Datos_Colecta$eventTime <- format(Datos_Colecta$eventTime, "%H:%M:%S")
 #parentEventID####
 Eventos_encabezados$parentEventID
 
-parentEventID<-as.data.frame(rep("CCCP:EXP.PACIFICO:2018", time=34))
+parentEventID<-as.data.frame(rep("DIMAR:CCCP:EXP.PACIFICO:2018", time=34))
 colnames(parentEventID)="parentEventID"
 
 #eventID####
 Eventos_encabezados$eventID
 
-eventID<-as.data.frame(paste0("CCCP:EXP.PACIFICO:2018:",Datos_Colecta$fieldNumber))
+eventID<-as.data.frame(paste0("DIMAR:CCCP:EXP.PACIFICO:2018:",Datos_Colecta$fieldNumber))
 colnames(eventID)="eventID"
 
 #samplingProtocol####
@@ -51,7 +51,7 @@ colnames(eventDate)<-"eventDate"
 
 
 #year
-year<-as.data.frame(rep(format(Datos_Colecta$eventDate, "%Y"), time=34))
+year<-as.data.frame(format(Datos_Colecta$eventDate, "%Y"))
 colnames(year)="year"
 
 
@@ -127,6 +127,14 @@ colnames(higherGeography)="higherGeography"
 continent<-as.data.frame(rep("América del Sur", time=34))
 colnames(continent)="continent"
 
+#stateProvince####
+stateProvince<-as.data.frame(rep("Nariño", time=34))
+colnames(stateProvince)="stateProvince"
+
+#county####
+county<-as.data.frame(rep("San Andrés de Tumaco", time=34))
+colnames(county)="county"
+
 #waterBody####
 
 waterBody<-as.data.frame(rep("Océano Pacífico", time=34))
@@ -200,6 +208,8 @@ eventFinal<-cbind(parentEventID,
       locationID,
       higherGeography,
       continent,
+      county,
+      stateProvince,
       waterBody,
       country,
       countryCode,
